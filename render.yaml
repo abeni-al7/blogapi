@@ -1,0 +1,22 @@
+databases:
+  - name: blogdb
+    plan: free
+    databaseName: blogdb
+    user: blogdb
+
+services:
+  - type: web
+    plan: free
+    name: library
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn django_project.wsgi"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: blogdb
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
